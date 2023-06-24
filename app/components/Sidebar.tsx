@@ -13,7 +13,6 @@ interface SideBarProps {
 }
 
 const Sidebar: React.FC<SideBarProps> = ({ children }) => {
-  console.error("Sidebar");
   const pathname = usePathname();
 
   const routes = useMemo(() => {

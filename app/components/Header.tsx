@@ -6,6 +6,7 @@ import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
 import Button from "./Button";
+import { Dhurjati } from "next/font/google";
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -67,6 +68,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
           </>
         </div>
       </div>
+      {children}
     </div>
   );
 };
