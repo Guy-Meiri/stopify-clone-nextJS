@@ -31,6 +31,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
       toast.success(`Welcome ${user.email}`);
     }
   }, [user]);
+
   useEffect(() => {
     console.error("in header effect:" + `${session}`);
     if (session) {

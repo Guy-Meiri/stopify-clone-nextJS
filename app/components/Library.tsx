@@ -2,10 +2,21 @@
 import React from "react";
 import { TbPlaylist } from "react-icons/tb";
 import { AiOutlinePlus } from "react-icons/ai";
+import useAuthModal from "@/hooks/useAuthModal";
+import { useUser } from "@/hooks/useUser";
+import useUploadModal from "@/hooks/useUploadModal";
 
 const Library = () => {
+  const authModal = useAuthModal();
+  const { user } = useUser();
+  const uploadModal = useUploadModal();
   const onClick = () => {
-    //todo: handle upload
+    // console.log(`library: ${JSON.stringify(user)}`);
+    if (!user) {
+      return authModal.onOpen();
+    }
+    uploadModal.onOpen();
+    //todo: check for subscriptions
   };
 
   return (
