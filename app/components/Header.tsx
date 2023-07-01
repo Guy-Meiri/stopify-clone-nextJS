@@ -27,6 +27,11 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
   const { user } = useUser();
 
   useEffect(() => {
+    if (user) {
+      toast.success(`Welcome ${user.email}`);
+    }
+  }, [user]);
+  useEffect(() => {
     console.error("in header effect:" + `${session}`);
     if (session) {
       router.refresh();
