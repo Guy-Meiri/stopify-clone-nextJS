@@ -6,9 +6,14 @@ import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { HiHome } from "react-icons/hi";
 import { BiSearch } from "react-icons/bi";
 import Button from "./Button";
-import { Dhurjati } from "next/font/google";
 import useAuthModal from "@/hooks/useAuthModal";
-import { useSessionContext } from "@supabase/auth-helpers-react";
+import {
+  useSessionContext,
+  useSupabaseClient,
+} from "@supabase/auth-helpers-react";
+import { useUser } from "@/hooks/useUser";
+import { FaUserAlt } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -18,13 +23,28 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
   const { onClose, onOpen } = useAuthModal();
   const router = useRouter();
   const { session } = useSessionContext();
+  const supabaseClient = useSupabaseClient();
+  const { user } = useUser();
 
   useEffect(() => {
+    console.error("in header effect:" + `${session}`);
     if (session) {
       router.refresh();
       onClose();
     }
-  }, [onclose, session, router]);
+  }, [session, router, onClose]);
+
+  const handleLogout = async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    //todo: Reset any playing songs
+    router.refresh();
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Logged out successfully");
+    }
+  };
 
   return (
     <div
@@ -58,21 +78,35 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
           </button>
         </div>
         <div className="flex justify-between items-center gap-x-4">
-          <>
-            <div>
+          {user ? (
+            <div className="flex gap-x-4 items-center">
+              <Button onClick={handleLogout} className="bg-white px-6 py-2">
+                Logout
+              </Button>
               <Button
-                onClick={onOpen}
-                className="bg-transparent text-neutral-300 font-medium"
+                onClick={() => router.push("/account")}
+                className="bg-white px-6 py-2"
               >
-                Sign Up
+                <FaUserAlt />
               </Button>
             </div>
-            <div>
-              <Button onClick={onOpen} className="bg-white px-6 py-2">
-                Log in
-              </Button>
-            </div>
-          </>
+          ) : (
+            <>
+              <div>
+                <Button
+                  onClick={onOpen}
+                  className="bg-transparent text-neutral-300 font-medium"
+                >
+                  Sign Up
+                </Button>
+              </div>
+              <div>
+                <Button onClick={onOpen} className="bg-white px-6 py-2">
+                  Log in
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
       {children}
